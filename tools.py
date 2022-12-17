@@ -39,11 +39,21 @@ def err_quad(X, Y):
 
     return somme/n
 
-def show(img, titre="default", dim2=16):
-    img *= 255
-    img = np.reshape(img, (-1, dim2))
-    img = img.astype(np.uint8)
-    cv.imshow(titre, img)
+def show(img, titre="default", dim1=20, dim2=16):
+    image = np.copy(img)
+    image *= 255
+    N_images = image.shape[0]
+    N_grid = int(np.sqrt(N_images))
+    M_grid = int(np.ceil(N_images/N_grid))
+    N1 = N_grid*M_grid*dim1*dim2
+    N2 = N_images*dim1*dim2
+    image = np.reshape(image, -1)
+    image = np.append(image, np.zeros(N1 - N2))
+    image = np.reshape(image, (N_grid, M_grid, dim1, dim2))
+    image = image.swapaxes(1, 2)
+    image = np.reshape(image, (N_grid*dim1, -1))
+    image = image.astype(np.uint8)
+    cv.imshow(titre, image)
     cv.waitKey(0)
     cv.destroyAllWindows()
 
