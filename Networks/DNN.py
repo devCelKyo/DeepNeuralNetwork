@@ -1,5 +1,4 @@
-from RBM import RBM
-from DBN import DBN
+from Networks.DBN import DBN
 from numpy.random import rand, binomial
 from tools import shuffle_two
 import numpy as np
@@ -13,8 +12,11 @@ class DNN:
         for rbm in self.RBM:
             self.W.append(rbm.W)
             self.b.append(rbm.b)
+        self.dims = N_dims
+        self.pretrained = False
 
     def pretrain(self, epochs, eps, tb, X):
+        self.pretrained = True
         self.DBN.train(epochs, eps, tb, X, False)
 
     def entree_sortie(self, X):

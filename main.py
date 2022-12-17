@@ -1,6 +1,6 @@
-from tools import lire_alpha_digit, affiche_image, show
-from RBM import RBM
-from DBN import DBN
+from tools import lire_alpha_digit, show, save, load
+from Networks.RBM import RBM
+from Networks.DBN import DBN
 
 X = lire_alpha_digit([10, 11, 12])
 #dbn = DBN((X.shape[1], 100, 100, 100))

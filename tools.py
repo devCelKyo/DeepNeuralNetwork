@@ -1,8 +1,8 @@
 import scipy.io
 import numpy as np
 import cv2 as cv
-import idx2numpy
 import matplotlib.pyplot as plt
+import pickle
 
 def lire_alpha_digit(carac):
     data = scipy.io.loadmat('data/binaryalphadigs.mat')['dat']
@@ -39,11 +39,7 @@ def err_quad(X, Y):
 
     return somme/n
 
-def show(img):
-    plt.imshow(img, cmap=plt.cm.binary)
-    plt.show()
-
-def affiche_image(img, titre="default", dim2=16):
+def show(img, titre="default", dim2=16):
     img *= 255
     img = np.reshape(img, (-1, dim2))
     img = img.astype(np.uint8)
@@ -60,3 +56,24 @@ def shuffle_two(A, B):
         shuffled_B[i] = B[permutation[i]]
 
     return shuffled_A, shuffled_B
+
+def save(NN, note=None):
+    net_type = NN.__class__.__name__
+    filename = "{}-"
+    for dim in NN.dims:
+        filename += "{}x"
+    filename = filename[:-1]
+    filename = filename.format(net_type, *NN.dims)
+    if NN.pretrained:
+        filename += "-pretrained"
+    if note is not None:
+        filename += "-{}".format(note)
+    path = "Networks/saves/{}".format(filename)
+    filehandler = open(path, "wb")
+    pickle.dump(NN, filehandler)
+
+def load(filename):
+    path = "Networks/saves/{}".format(filename)
+    filehandler = open(path, "rb")
+    
+    return pickle.load(filehandler)

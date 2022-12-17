@@ -1,12 +1,15 @@
-from RBM import RBM
+from Networks.RBM import RBM
 from numpy.random import rand, binomial
 import numpy as np
 
 class DBN:
     def __init__(self, N_dims):
         self.RBM = [RBM((N_dims[i-1], N_dims[i])) for i in range(1, len(N_dims))]
-
+        self.dims = N_dims
+        self.pretrained = False
+        
     def train(self, epochs, eps, tb, X, verbose):
+        self.pretrained = True
         X_train = np.copy(X)
         for rbm in self.RBM:
             rbm.train(epochs, eps, tb, X_train, verbose)

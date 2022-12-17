@@ -18,6 +18,8 @@ class RBM:
         self.W = np.random.normal(0, 0.01, size=N_dims)
         self.a = np.zeros(N_dims[0])
         self.b = np.zeros(N_dims[1])
+        self.dims = N_dims
+        self.pretrained = False
 
     def entree_sortie(self, X):
         X_tilde = np.matmul(X, self.W)
@@ -32,6 +34,7 @@ class RBM:
         return sigmoid(X)
 
     def train(self, epochs, eps, tb, X, verbose):
+        self.pretrained = True
         n, p, q = len(X), len(self.a), len(self.b)
         for i in range(epochs):
             np.random.shuffle(X)
