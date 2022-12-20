@@ -39,7 +39,7 @@ def err_quad(X, Y):
 
     return somme/n
 
-def show(img, titre="default", dim1=20, dim2=16):
+def show(img, titre="default", dim1=20, dim2=16, save=False, filename="foo", show=True):
     image = np.copy(img)
     image *= 255
     N_images = image.shape[0]
@@ -53,9 +53,12 @@ def show(img, titre="default", dim1=20, dim2=16):
     image = image.swapaxes(1, 2)
     image = np.reshape(image, (N_grid*dim1, -1))
     image = image.astype(np.uint8)
-    cv.imshow(titre, image)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+    if save:
+        cv.imwrite(filename, image)
+    if show:
+        cv.imshow(titre, image)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
 
 def shuffle_two(A, B):
     permutation = np.random.permutation(A.shape[0])
