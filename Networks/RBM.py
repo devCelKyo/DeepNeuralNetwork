@@ -8,14 +8,15 @@ def sigmoid(z):
 def softmax(z, k):
     somme = 0
     for zi in z:
-        somme += np.exp(-zi)
-    return z[k]/somme
+        somme += np.exp(zi)
+    return np.exp(z[k])/somme
 
 sigmoid = np.vectorize(sigmoid)
 
 class RBM:
     def __init__(self, N_dims):
         self.W = np.random.normal(0, 0.01, size=N_dims)
+        self.W = np.reshape(self.W, N_dims)
         self.a = np.zeros(N_dims[0])
         self.b = np.zeros(N_dims[1])
         self.dims = N_dims
@@ -71,7 +72,16 @@ class RBM:
         p, q = len(self.a), len(self.b)
         X_tilde = np.matmul(X, self.W)
         X_tilde += self.b
-        Y = np.zeros((X.shape[0], q))
-        for i, j in np.ndindex(Y.shape):
-            Y[i, j] = softmax(X[i], j)
+        try:
+            n_images = X.shape[1]
+        except IndexError:
+            n_images = 1
+        Y = np.zeros((n_images, q))
+        for i in range(n_images):
+            for j in range(q):
+                try:
+                    vector = X_tilde[i,:]
+                except IndexError:
+                    vector = X_tilde[:]
+                Y[i, j] = softmax(vector, j)
         return Y

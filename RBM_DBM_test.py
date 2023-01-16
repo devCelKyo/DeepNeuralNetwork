@@ -14,7 +14,7 @@ Q_DBN = (200, 200, 200)
 model = DBN((X.shape[1], *Q_DBN))
 
 model.train(epochs, eps, tb, X, verbose=False) # verbose=True pour voir les EQM à chaque tour
-img = model.generer_image(2, 256)
+img = model.generer_image(2, 64)
 
 show(img)
-save(model, "{}_chars".format(len(caracs)))
+#save(model, "{}_chars".format(len(caracs)))

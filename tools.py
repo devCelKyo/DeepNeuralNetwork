@@ -2,6 +2,7 @@ import scipy.io
 import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import pickle
 
 def lire_alpha_digit(carac):
@@ -37,7 +38,7 @@ def err_quad(X, Y):
     for i, j in np.ndindex(X.shape):
         somme += (X[i, j] - Y[i, j])**2
 
-    return somme/n
+    return somme/n   
 
 def show(img, titre="default", dim1=20, dim2=16, save=False, filename="foo", show=True):
     image = np.copy(img)
@@ -59,6 +60,17 @@ def show(img, titre="default", dim1=20, dim2=16, save=False, filename="foo", sho
         cv.imshow(titre, image)
         cv.waitKey(0)
         cv.destroyAllWindows()
+
+def show_m(img):
+    '''
+    Pour afficher les images de la BDD MNIST
+    '''
+    dim1, dim2 = img.shape
+    colors = ["white", "black"]
+    cmap = mpl.colors.ListedColormap(colors)
+    plt.axis('off')
+    plt.imshow(img, cmap=cmap)
+    plt.show()
 
 def shuffle_two(A, B):
     permutation = np.random.permutation(A.shape[0])
