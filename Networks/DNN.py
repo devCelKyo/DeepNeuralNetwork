@@ -1,6 +1,6 @@
 from Networks.DBN import DBN
 from numpy.random import rand, binomial
-from tools import shuffle_two
+from tools import shuffle_two, cross_entropie
 import numpy as np
 from copy import deepcopy
 
@@ -30,10 +30,10 @@ class DNN:
                 X_work.append(RBM[i].calc_softmax(X_work[i]))
         return X_work
 
-    def retropropagation(self, X, Y, eps, tb):
+    def retropropagation(self, X, Y, epochs, eps, tb):
         n = X.shape[0]
         N_couches = len(self.DBN.RBM)
-        for i in range(1):
+        for i in range(epochs):
             X, Y = shuffle_two(X, Y)
             for k in range(0, n, tb):
                 new_DNN = deepcopy(self)
@@ -43,17 +43,14 @@ class DNN:
                 C = sortie[-1] - Y_b
                 grad_W = np.transpose(sortie[-2])@C
                 grad_b = np.sum(C, axis=0)
-                print(grad_b)
                 new_DNN.W[-1] -= eps*grad_W/tb
                 new_DNN.b[-1] -= eps*grad_b/tb
-                for p in range(N_couches-2, -1, -1):
-                    C = (C@np.transpose(self.DBN.RBM.W[p+1]))*(sortie[p]*(1-sortie[p]))
-                    grad_W = np.transpose(sortie[p-1])@C
+                for p in range(N_couches-2, 0, -1):
+                    C = (C@np.transpose(self.DBN.RBM[p+1].W))*(sortie[p]*(1-sortie[p]))
+                    grad_W = np.transpose(sortie[p])@C
                     grad_b = np.sum(C, axis=0)
-                    new_DNN.DBN.RBM.W[-1] -= eps*grad_W/tb
-                    new_DNN.DBN.RBM.b[-1] -= eps*grad_b/tb
-                self = new_DNN
-                print(k)
+                    new_DNN.DBN.RBM[p].W -= eps*grad_W/tb
+                    new_DNN.DBN.RBM[p].b -= eps*grad_b/tb
 
     def test(self, X, Y):
         Y_est = self.entree_sortie(X)[-1]

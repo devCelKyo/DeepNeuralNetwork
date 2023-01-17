@@ -26,11 +26,14 @@ def readTestMNIST():
     return X, Y
 
 def label_array(Y):
-    new_Y = np.zeros((Y.shape[0], 10))
-    for i in range(len(Y)):
-        new_Y[i, Y[i]] = 1
-
-    return new_Y
+    if type(Y) == np.uint8:
+        new_Y = np.zeros(10)
+        new_Y[Y] = 1
+    else:
+        new_Y = np.zeros((Y.shape[0], 10))
+        for i in range(len(Y)):
+            new_Y[i, Y[i]] = 1
+    return np.array(new_Y)
 
 def err_quad(X, Y):
     somme = 0
@@ -40,6 +43,12 @@ def err_quad(X, Y):
 
     return somme/n   
 
+def cross_entropie(Y, Y_pred):
+    somme = 0
+    for i, j in np.ndindex(Y.shape):
+        somme -= Y[i, j]*np.log(Y_pred[i, j])
+    return somme
+    
 def show(img, titre="default", dim1=20, dim2=16, save=False, filename="foo", show=True):
     image = np.copy(img)
     image *= 255
@@ -96,6 +105,7 @@ def save(NN, note=None):
     path = "Networks/saves/{}".format(filename)
     filehandler = open(path, "wb")
     pickle.dump(NN, filehandler)
+    filehandler.close()
 
 def load(filename):
     path = "Networks/saves/{}".format(filename)
