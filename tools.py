@@ -100,8 +100,11 @@ def save(NN, note=None):
     filename = filename.format(net_type, *NN.dims)
     if NN.pretrained:
         filename += "-pretrained"
+    if net_type == "DNN" and NN.trained:
+        filename += "-trained-{}epochs".format(NN.epochs)
     if note is not None:
         filename += "-{}".format(note)
+    
     path = "Networks/saves/{}".format(filename)
     filehandler = open(path, "wb")
     pickle.dump(NN, filehandler)
@@ -112,3 +115,10 @@ def load(filename):
     filehandler = open(path, "rb")
     
     return pickle.load(filehandler)
+
+def hms(duree):
+    h = int(duree/3600)
+    m = int((duree%3600)/60)
+    s = duree%60
+
+    return h, m, s

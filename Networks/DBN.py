@@ -7,14 +7,14 @@ class DBN:
         self.RBM = [RBM((N_dims[i-1], N_dims[i])) for i in range(1, len(N_dims))]
         self.dims = N_dims
         self.pretrained = False
-        
+
     def train(self, epochs, eps, tb, X, verbose):
         self.pretrained = True
         X_train = np.copy(X)
         for rbm in self.RBM:
             rbm.train(epochs, eps, tb, X_train, verbose)
             X_train = rbm.entree_sortie(X_train)
-
+  
     def generer_image(self, gibbs_iter, n_images):
         last_rbm = self.RBM[-1]
         H = last_rbm.generer_image(gibbs_iter, n_images)

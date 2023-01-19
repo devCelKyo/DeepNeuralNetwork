@@ -8,8 +8,8 @@ def sigmoid(z):
 def softmax(z, k):
     somme = 0
     for zi in z:
-        somme += np.exp(-zi)
-    return np.exp(-z[k])/somme
+        somme += np.exp(zi)
+    return np.exp(z[k])/somme
 
 sigmoid = np.vectorize(sigmoid)
 
@@ -50,9 +50,9 @@ class RBM:
                 grad_b = np.sum(ph_v0 - ph_v1, axis=0)
                 grad_a = np.sum(X_b - v_1, axis=0)
 
-                self.W += eps*grad_W
-                self.b += eps*grad_b
-                self.a += eps*grad_a
+                self.W += eps*grad_W/tb
+                self.b += eps*grad_b/tb
+                self.a += eps*grad_a/tb
                 if verbose:
                     print(err_quad(X_b, v_1))
 

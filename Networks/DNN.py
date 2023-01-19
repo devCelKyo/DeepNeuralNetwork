@@ -14,6 +14,8 @@ class DNN:
             self.b.append(rbm.b)
         self.dims = N_dims
         self.pretrained = False
+        self.trained = False
+        self.epochs = 0
 
     def pretrain(self, epochs, eps, tb, X):
         self.pretrained = True
@@ -33,6 +35,7 @@ class DNN:
     def retropropagation(self, X, Y, epochs, eps, tb):
         n = X.shape[0]
         N_couches = len(self.DBN.RBM)
+        self.trained = True
         for i in range(epochs):
             X, Y = shuffle_two(X, Y)
             for k in range(0, n, tb):
@@ -51,6 +54,7 @@ class DNN:
                     grad_b = np.sum(C, axis=0)
                     new_DNN.DBN.RBM[p].W -= eps*grad_W/tb
                     new_DNN.DBN.RBM[p].b -= eps*grad_b/tb
+            self.epochs += 1
 
     def test(self, X, Y):
         Y_est = self.entree_sortie(X)[-1]
