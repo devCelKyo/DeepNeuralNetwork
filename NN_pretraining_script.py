@@ -6,11 +6,9 @@ from time import time
 X, Y = readTrainMNIST()
 X, Y = X.reshape((X.shape[0], 784)), label_array(Y)
 
-DIMS = [(784, 100, 100, 10), (784, 200, 200, 10), (784, 200, 200, 200, 10),
-        (784, 200, 200, 200, 200, 200, 10),
-        (784, 300, 300, 10), (784, 700, 700, 10)]
+DIMS = [(784, 300, 300, 10), (784, 700, 700, 10)]
 
-tb = 500
+tb = 5000 # Le meilleur compromis mémoire/temps
 epochs = 100
 
 debut = time()

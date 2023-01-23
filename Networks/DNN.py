@@ -32,7 +32,7 @@ class DNN:
                 X_work.append(RBM[i].calc_softmax(X_work[i]))
         return X_work
 
-    def retropropagation(self, X, Y, epochs, eps, tb):
+    def retropropagation(self, X, Y, epochs, eps, tb, verbose=False):
         n = X.shape[0]
         N_couches = len(self.DBN.RBM)
         self.trained = True
@@ -54,7 +54,11 @@ class DNN:
                     grad_b = np.sum(C, axis=0)
                     new_DNN.DBN.RBM[p].W -= eps*grad_W/tb
                     new_DNN.DBN.RBM[p].b -= eps*grad_b/tb
-            self.epochs += 1
+                self = deepcopy(new_DNN)
+            self.epochs = self.epochs + 1
+            if verbose:
+                sortie = self.entree_sortie(X)[-1]
+                print(cross_entropie(Y, sortie))
 
     def test(self, X, Y):
         Y_est = self.entree_sortie(X)[-1]

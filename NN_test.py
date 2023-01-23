@@ -1,17 +1,34 @@
-from tools import readTrainMNIST, readTestMNIST, show, label_array
-from tools import lire_alpha_digit, save, load
 from Networks.DNN import DNN
+from tools import readTrainMNIST, readTestMNIST, show_m, label_array
+from tools import save, load, cross_entropie
 import numpy as np
+from time import time
 
-X, Y = readTrainMNIST()
-X_flat, Y_arr = np.reshape(X, (X.shape[0], -1)), label_array(Y)
+X_test, Y_test = readTestMNIST()
+X_test, Y_test = X_test.reshape((X_test.shape[0], 784)), label_array(Y_test)
 
-N_dims = (X_flat.shape[1], 200, 200, 10)
-n_iter_rbm = 100
-n_iter_retro = 200
-eps = 0.1
-tb = 10
+DIMS = [(784, 100, 100, 10), (784, 200, 200, 10), (784, 200, 200, 200, 10),
+        (784, 200, 200, 200, 10), (784, 200, 200, 10),
+        (784, 300, 300, 10), (784, 700, 700, 10)]
 
-NN = DNN(N_dims)
-#NN.pretrain(n_iter_rbm, eps, tb, X_flat)
-#NN.retropropagation(X_flat, Y_arr, eps, tb)
+MODELS_P = []
+MODELS_NP = []
+
+for dim in DIMS:
+    model_name = "DNN-"
+    for N in dim:
+        model_name += "{}x".format(N)
+    model_name = model_name[:-1]
+    model_name += "-pretrained"
+
+    model_p = load(model_name)
+    model_np = DNN(dim)
+
+    MODELS_P.append(model_p)
+    MODELS_NP.append(model_np)
+
+model_p = MODELS_P[0]
+sorties_p = model_p.entree_sortie(X_test)[-1]
+
+model_np = MODELS_NP[0]
+sorties_np = model_np.entree_sortie(X_test)[-1]

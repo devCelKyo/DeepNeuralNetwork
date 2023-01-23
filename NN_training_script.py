@@ -1,12 +1,12 @@
 from Networks.DNN import DNN
-from tools import readTrainMNIST, show_m, label_array, save, load
+from tools import readTrainMNIST, show_m, label_array, save, load, hms
 import numpy as np
 from time import time
 
 X, Y = readTrainMNIST()
 X, Y = X.reshape((X.shape[0], 784)), label_array(Y)
 
-tb = 500
+tb = 5000
 epochs = 200
 
 DIMS = [(784, 100, 100, 10), (784, 200, 200, 10), (784, 200, 200, 200, 10),
@@ -28,5 +28,15 @@ for dim in DIMS:
 
     MODELS_P.append(model_p)
     MODELS_NP.append(model_np)
-    
-model = MODELS_P[0]
+
+for i in range(len(MODELS_P)):
+    model_p = MODELS_P[i]
+    model_np = MODELS_NP[i]
+
+    debut = time()
+    print("Modèle préentrainé : {}".format(model_p.dims))
+    model_p.retropropagation(X, Y, epochs, 0.1, tb, True)
+    fin = time()
+    print("tps d'exec : {}h {}m {}s".format(hms(fin - debut)))
+
+    save(model_p, note="trained60k-200epochs")

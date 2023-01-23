@@ -17,13 +17,13 @@ def readTrainMNIST():
     X = np.load('data/m_train_data.npy')
     Y = np.load('data/m_train_label.npy')
 
-    return X, Y
+    return X/255, Y
 
 def readTestMNIST():
     X = np.load('data/m_test_data.npy')
     Y = np.load('data/m_test_label.npy')
 
-    return X, Y
+    return X/255, Y
 
 def label_array(Y):
     if type(Y) == np.uint8:
@@ -45,9 +45,10 @@ def err_quad(X, Y):
 
 def cross_entropie(Y, Y_pred):
     somme = 0
+    n = Y.shape[0]
     for i, j in np.ndindex(Y.shape):
         somme -= Y[i, j]*np.log(Y_pred[i, j])
-    return somme
+    return somme/n
     
 def show(img, titre="default", dim1=20, dim2=16, save=False, filename="foo", show=True):
     image = np.copy(img)
