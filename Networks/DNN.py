@@ -17,12 +17,35 @@ class DNN:
         self.trained = False
         self.epochs = 0
 
+    def getRBM(self):
+        return self.DBN.RBM
+
+    def getW(self, i):
+        return self.DBN.RBM[i].W
+
+    def setW(self, i, W):
+        self.DBN.RBM[i].W = W
+        return self
+
+    def addW(self, i, added_W):
+        return self.setW(i, self.getW(i) + added_W)
+        
+    def getb(self, i):
+        return self.DBN.RBM[i].b
+
+    def setb(self, i, b):
+        self.DBN.RBM[i].b = b
+        return self
+
+    def addb(self, i, added_b):
+        return self.setb(i, self.getb(i) + added_b)
+
     def pretrain(self, epochs, eps, tb, X):
         self.pretrained = True
         self.DBN.train(epochs, eps, tb, X, False)
 
     def entree_sortie(self, X):
-        RBM = self.RBM
+        RBM = self.getRBM()
         N_couches = len(RBM)
         X_work = [np.copy(X)]
         for i in range(N_couches):
@@ -36,26 +59,28 @@ class DNN:
         n = X.shape[0]
         N_couches = len(self.DBN.RBM)
         self.trained = True
+        new_DNN = deepcopy(self)
         for i in range(epochs):
             X, Y = shuffle_two(X, Y)
             for k in range(0, n, tb):
-                new_DNN = deepcopy(self)
                 X_b = X[k:min(n, k+tb),:]
                 Y_b = Y[k:min(n, k+tb),:]
                 sortie = self.entree_sortie(X_b)
                 C = sortie[-1] - Y_b
                 grad_W = np.transpose(sortie[-2])@C
                 grad_b = np.sum(C, axis=0)
-                new_DNN.W[-1] -= eps*grad_W/tb
-                new_DNN.b[-1] -= eps*grad_b/tb
-                for p in range(N_couches-2, 0, -1):
-                    C = (C@np.transpose(self.DBN.RBM[p+1].W))*(sortie[p]*(1-sortie[p]))
+                old_W = new_DNN.getW(-1)
+                new_DNN.addW(-1, -eps*grad_W/tb)
+                new_DNN.addb(-1, -eps*grad_b/tb)
+                new_W = new_DNN.getW(-1)
+                for p in range(N_couches-2, -1, -1):
+                    C = (C@np.transpose(self.getW(p+1)))*(sortie[p+1]*(1-sortie[p+1]))
                     grad_W = np.transpose(sortie[p])@C
                     grad_b = np.sum(C, axis=0)
-                    new_DNN.DBN.RBM[p].W -= eps*grad_W/tb
-                    new_DNN.DBN.RBM[p].b -= eps*grad_b/tb
-                self = deepcopy(new_DNN)
-            self.epochs = self.epochs + 1
+                    new_DNN.addW(p, -eps*grad_W/tb)
+                    new_DNN.addb(p, -eps*grad_b/tb)
+                self.DBN = deepcopy(new_DNN.DBN)
+            self.epochs += 1
             if verbose:
                 sortie = self.entree_sortie(X)[-1]
                 print(cross_entropie(Y, sortie))

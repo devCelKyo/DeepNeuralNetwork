@@ -6,12 +6,10 @@ def sigmoid(z):
     return 1/(1 + np.exp(-z))
 
 def softmax(z, k):
-    somme = 0
-    for zi in z:
-        somme += np.exp(zi)
+    somme = np.sum(np.exp(z))
     return np.exp(z[k])/somme
 
-sigmoid = np.vectorize(sigmoid)
+#sigmoid = np.vectorize(sigmoid)
 
 class RBM:
     def __init__(self, N_dims):
@@ -85,3 +83,14 @@ class RBM:
                     vector = X_tilde[:]
                 Y[i, j] = softmax(vector, j)
         return Y
+
+    def calc_softmax2(self, X):
+        p, q = len(self.a), len(self.b)
+        X_tilde = np.matmul(X, self.W) + self.b
+        X_tilde = np.exp(X_tilde)
+        if X.ndim == 2:
+            somme = np.sum(X_tilde, axis=1)
+            return np.divide(X_tilde.T, somme).T
+        else:
+            somme = np.sum(X_tilde)
+            return X_tilde/somme

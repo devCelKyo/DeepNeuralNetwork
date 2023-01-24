@@ -11,9 +11,9 @@ class DBN:
     def train(self, epochs, eps, tb, X, verbose):
         self.pretrained = True
         X_train = np.copy(X)
-        for rbm in self.RBM:
-            rbm.train(epochs, eps, tb, X_train, verbose)
-            X_train = rbm.entree_sortie(X_train)
+        for i in range(len(self.RBM) - 1):
+            self.RBM[i].train(epochs, eps, tb, X_train, verbose)
+            X_train = self.RBM[i].entree_sortie(X_train)
   
     def generer_image(self, gibbs_iter, n_images):
         last_rbm = self.RBM[-1]

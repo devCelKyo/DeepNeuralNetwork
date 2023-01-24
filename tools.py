@@ -120,6 +120,6 @@ def load(filename):
 def hms(duree):
     h = int(duree/3600)
     m = int((duree%3600)/60)
-    s = duree%60
+    s = int(duree%60)
 
     return h, m, s
