@@ -69,10 +69,8 @@ class DNN:
                 C = sortie[-1] - Y_b
                 grad_W = np.transpose(sortie[-2])@C
                 grad_b = np.sum(C, axis=0)
-                old_W = new_DNN.getW(-1)
                 new_DNN.addW(-1, -eps*grad_W/tb)
                 new_DNN.addb(-1, -eps*grad_b/tb)
-                new_W = new_DNN.getW(-1)
                 for p in range(N_couches-2, -1, -1):
                     C = (C@np.transpose(self.getW(p+1)))*(sortie[p+1]*(1-sortie[p+1]))
                     grad_W = np.transpose(sortie[p])@C
