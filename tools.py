@@ -123,3 +123,6 @@ def hms(duree):
     s = int(duree%60)
 
     return h, m, s
+
+def reformat(X, Y):
+    return X.reshape((X.shape[0], 784)), label_array(Y)
