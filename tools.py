@@ -92,7 +92,7 @@ def shuffle_two(A, B):
 
     return shuffled_A, shuffled_B
 
-def save(NN, note=None):
+def save(NN, note=None, special=False):
     net_type = NN.__class__.__name__
     filename = "{}-"
     for dim in NN.dims:
@@ -105,14 +105,19 @@ def save(NN, note=None):
         filename += "-trained-{}epochs".format(NN.epochs)
     if note is not None:
         filename += "-{}".format(note)
-    
-    path = "Networks/saves/{}".format(filename)
+    if not special:
+        path = "Networks/saves/{}".format(filename)
+    else:
+        path = "Networks/special_saves/{}".format(filename)
     filehandler = open(path, "wb")
     pickle.dump(NN, filehandler)
     filehandler.close()
 
-def load(filename):
-    path = "Networks/saves/{}".format(filename)
+def load(filename, special=False):
+    if not special:
+        path = "Networks/saves/{}".format(filename)
+    else:
+        path = "Networks/special_saves/{}".format(filename)
     filehandler = open(path, "rb")
     
     return pickle.load(filehandler)
