@@ -130,4 +130,7 @@ def hms(duree):
     return h, m, s
 
 def reformat(X, Y):
+    '''
+    Convertit les images 2D en vecteurs 1D, convertit les labels en vecteurs 0-1
+    '''
     return X.reshape((X.shape[0], 784)), label_array(Y)
